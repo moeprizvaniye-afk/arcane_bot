@@ -324,7 +324,35 @@ async def send_visualization(update: Update, context: ContextTypes.DEFAULT_TYPE)
         f"🎧 *Визуализация*\n\n{ARCANE_TEXTS[first_arcane]['visualization']}",
         parse_mode="Markdown",
     )
-
+    
+    book_image_path = "book_cover.jpg"
+    if os.path.exists(book_image_path):
+        with open(book_image_path, "rb") as book_photo:
+            await update.message.reply_photo(
+                photo=book_photo,
+                caption=(
+                    "✨ *Игра завершена!*\n\n"
+                    "Ты готов(а) изменить мир своими идеями.\n"
+                    "Твоя уникальность неоспорима.\n\n"
+                    "📖 *Я написала книгу «Точка вдохновения», чтобы творить несмотря ни на что.*\n"
+                    "Она поможет создавать что угодно из твоей уникальности, подскажет, как перестать откладывать "
+                    "и станет точкой старта твоих идей.\n\n"
+                    "👉 [Переходи по ссылке](https://ridero.ru/books/tochka_vdokhnoveniya/)"
+                ),
+                parse_mode="Markdown",
+            )
+    else:
+        await update.message.reply_text(
+            "✨ *Игра завершена!*\n\n"
+            "Ты готов(а) изменить мир своими идеями.\n"
+            "Твоя уникальность неоспорима.\n\n"
+            "📖 *Я написала книгу «Точка вдохновения», чтобы творить несмотря ни на что.*\n"
+            "Она поможет создавать что угодно из твоей уникальности, подскажет, как перестать откладывать "
+            "и станет точкой старта твоих идей.\n\n"
+            "👉 [Переходи по ссылке](https://ridero.ru/books/tochka_vdokhnoveniya/)",
+            parse_mode="Markdown",
+        )
+    
     keyboard = [
         [
             KeyboardButton("📝 Написать отзыв"),
@@ -333,40 +361,20 @@ async def send_visualization(update: Update, context: ContextTypes.DEFAULT_TYPE)
         ]
     ]
     await update.message.reply_text(
-        "✨ *Игра завершена!*\n\nТы готов(а) изменить мир своими идеями.\nТвоя уникальность неоспорима.",
-        parse_mode="Markdown",
+        "👇 Выберите действие:",
         reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True),
     )
     return ConversationHandler.END
 
-
-async def later_visualization(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [[KeyboardButton("🌀 Трансформирующий образ")]]
-    await update.message.reply_text(
-        "Нажми, когда будешь готов.",
-        reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True),
-    )
-    return VISUALIZATION_CHOICE
-
-
-async def thanks(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    book_image_path = "book_cover.jpg"
-    if os.path.exists(book_image_path):
-        with open(book_image_path, "rb") as book_photo:
-            await update.message.reply_photo(
-                photo=book_photo,
-                caption=(
-                    "📖 *Я написала книгу «Точка вдохновения», чтобы творить несмотря ни на что.*\n\n"
-                    "Она поможет создавать что угодно из твоей уникальности, подскажет, как перестать откладывать "
-                    "и станет точкой старта твоих идей.\n\n"
-                    "👉 [Переходи по ссылке](https://ridero.ru/books/tochka_vdokhnoveniya/)"
-                ),
-                parse_mode="Markdown",
-            )
-
-
 async def feedback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Напиши отзыв сюда, он придёт автору: @ksusha_slushai")
+
+async def thanks(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("🙌 Спасибо за игру! Возвращайся.")
+
+async def share(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    bot_info = await context.bot.get_me()
+    await update.message.reply_text(f"Поделись игрой: https://t.me/{bot_info.username}")
 
 
 def main():
