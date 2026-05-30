@@ -408,13 +408,8 @@ def main():
     app.add_handler(MessageHandler(filters.Text("📤 Поделиться"), share))
 
     # Для работы на Bothost через вебхук
-    port = int(os.environ.get("PORT", 8000))
-    app.run_webhook(
-        listen="0.0.0.0",
-        port=port,
-        url_path=TOKEN,
-        webhook_url=f"https://bot-1780138676-8756-mks20260.bothost.tech/{TOKEN}"
-    )
+print("🚀 Бот запущен и работает!")
+app.run_polling()
 
 
 if __name__ == "__main__":
