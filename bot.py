@@ -413,7 +413,7 @@ def main():
         listen="0.0.0.0",
         port=port,
         url_path=TOKEN,
-        webhook_url=f"https://bot-1780137925-1157-mks20260.bothost.tech/{TOKEN}"
+        webhook_url=f"https://bot-1780138676-8756-mks20260.bothost.tech/{TOKEN}"
     )
 
 
