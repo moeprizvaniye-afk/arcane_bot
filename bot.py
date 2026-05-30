@@ -355,11 +355,21 @@ async def share(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def thanks(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🙌 Спасибо за игру! Возвращайся.")
+    await update.message.reply_text(
+    "✨ *Игра завершена!*\n\n"
+    "Ты готов(а) изменить мир своими идеями.\n"
+    "Твоя уникальность неоспорима.\n\n"
+    "📖 *Я написала книгу «Точка вдохновения», чтобы творить несмотря ни на что.*\n"
+    "Она поможет создавать что угодно из твоей уникальности, подскажет, как перестать откладывать "
+    "и станет точкой старта твоих идей.\n\n"
+    "👉 [Переходи по ссылке](https://ridero.ru/books/tochka_vdokhnoveniya/)",
+    parse_mode="Markdown",
+    reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True),
+)
 
 
 async def feedback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Напиши отзыв сюда, он придёт автору: @tvoy_nick")
+    await update.message.reply_text("Напиши отзыв сюда, он придёт автору: @ksusha_slushai")
 
 
 def main():
