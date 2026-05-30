@@ -220,7 +220,6 @@ def get_random_arcane(exclude_list):
     available = [a for a in range(22) if a not in exclude_list]
     return random.choice(available) if available else None
 
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     user_arcanes[user_id] = []
@@ -233,7 +232,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     return PROFILE
 
-
 async def start_research(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[KeyboardButton("🎴 Вытянуть карту")]]
     await update.message.reply_text(
@@ -242,7 +240,6 @@ async def start_research(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True),
     )
     return PROFILE
-
 
 async def draw_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -268,14 +265,11 @@ async def draw_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
         next_step = METHOD
         next_message = "📖 *Шаг 4: Твоя методика*\n\nНажми «Получить методику»."
 
-    # Отправляем фото без подписи, а текст отдельно (чтобы избежать лимита 1024 символов)
     image_path = f"images/{arcane:02d}.jpeg"
     if os.path.exists(image_path):
         with open(image_path, "rb") as photo:
-            await update.message.reply_photo(photo=photo)  # фото без caption
-            await update.message.reply_text(
-                f"✨ *Карта*\n\n{text}", parse_mode="Markdown"
-            )  # текст отдельно
+            await update.message.reply_photo(photo=photo)
+            await update.message.reply_text(f"✨ *Карта*\n\n{text}", parse_mode="Markdown")
     else:
         await update.message.reply_text(f"✨ *Карта*\n\n{text}", parse_mode="Markdown")
 
@@ -297,7 +291,6 @@ async def draw_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["step"] = next_step
     return next_step
 
-
 async def get_method(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     first_arcane = user_arcanes[user_id][0]
@@ -316,7 +309,6 @@ async def get_method(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     return VISUALIZATION_CHOICE
 
-
 async def send_visualization(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     first_arcane = user_arcanes[user_id][0]
@@ -324,35 +316,25 @@ async def send_visualization(update: Update, context: ContextTypes.DEFAULT_TYPE)
         f"🎧 *Визуализация*\n\n{ARCANE_TEXTS[first_arcane]['visualization']}",
         parse_mode="Markdown",
     )
-    
+
+    # Отправляем фото книги с подписью (текст завершения и ссылка)
     book_image_path = "book_cover.jpg"
+    caption = (
+        "✨ *Игра завершена!*\n\n"
+        "Ты готов(а) изменить мир своими идеями.\n"
+        "Твоя уникальность неоспорима.\n\n"
+        "📖 *Я написала книгу «Точка вдохновения», чтобы творить несмотря ни на что.*\n"
+        "Она поможет создавать что угодно из твоей уникальности, подскажет, как перестать откладывать "
+        "и станет точкой старта твоих идей.\n\n"
+        "👉 [Переходи по ссылке](https://ridero.ru/books/tochka_vdokhnoveniya/)"
+    )
     if os.path.exists(book_image_path):
         with open(book_image_path, "rb") as book_photo:
-            await update.message.reply_photo(
-                photo=book_photo,
-                caption=(
-                    "✨ *Игра завершена!*\n\n"
-                    "Ты готов(а) изменить мир своими идеями.\n"
-                    "Твоя уникальность неоспорима.\n\n"
-                    "📖 *Я написала книгу «Точка вдохновения», чтобы творить несмотря ни на что.*\n"
-                    "Она поможет создавать что угодно из твоей уникальности, подскажет, как перестать откладывать "
-                    "и станет точкой старта твоих идей.\n\n"
-                    "👉 [Переходи по ссылке](https://ridero.ru/books/tochka_vdokhnoveniya/)"
-                ),
-                parse_mode="Markdown",
-            )
+            await update.message.reply_photo(photo=book_photo, caption=caption, parse_mode="Markdown")
     else:
-        await update.message.reply_text(
-            "✨ *Игра завершена!*\n\n"
-            "Ты готов(а) изменить мир своими идеями.\n"
-            "Твоя уникальность неоспорима.\n\n"
-            "📖 *Я написала книгу «Точка вдохновения», чтобы творить несмотря ни на что.*\n"
-            "Она поможет создавать что угодно из твоей уникальности, подскажет, как перестать откладывать "
-            "и станет точкой старта твоих идей.\n\n"
-            "👉 [Переходи по ссылке](https://ridero.ru/books/tochka_vdokhnoveniya/)",
-            parse_mode="Markdown",
-        )
-    
+        await update.message.reply_text(caption, parse_mode="Markdown")
+
+    # Финальные кнопки
     keyboard = [
         [
             KeyboardButton("📝 Написать отзыв"),
@@ -366,16 +348,23 @@ async def send_visualization(update: Update, context: ContextTypes.DEFAULT_TYPE)
     )
     return ConversationHandler.END
 
-async def feedback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Напиши отзыв сюда, он придёт автору: @ksusha_slushai")
-
-async def thanks(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🙌 Спасибо за игру! Возвращайся.")
+async def later_visualization(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [[KeyboardButton("🌀 Трансформирующий образ")]]
+    await update.message.reply_text(
+        "Нажми, когда будешь готов.",
+        reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True),
+    )
+    return VISUALIZATION_CHOICE
 
 async def share(update: Update, context: ContextTypes.DEFAULT_TYPE):
     bot_info = await context.bot.get_me()
     await update.message.reply_text(f"Поделись игрой: https://t.me/{bot_info.username}")
 
+async def thanks(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("🙌 Спасибо за игру! Возвращайся.")
+
+async def feedback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Напиши отзыв сюда, он придёт автору: @ksusha_slushai")
 
 def main():
     app = Application.builder().token(TOKEN).build()
@@ -393,9 +382,7 @@ def main():
             VISUALIZATION_CHOICE: [
                 MessageHandler(filters.Text("✨ Да, погрузиться"), send_visualization),
                 MessageHandler(filters.Text("⏳ Вернусь позже"), later_visualization),
-                MessageHandler(
-                    filters.Text("🌀 Трансформирующий образ"), send_visualization
-                ),
+                MessageHandler(filters.Text("🌀 Трансформирующий образ"), send_visualization),
             ],
         },
         fallbacks=[CommandHandler("cancel", lambda u, c: ConversationHandler.END)],
@@ -409,6 +396,6 @@ def main():
     print("🚀 Бот запущен и работает!")
     app.run_polling()
 
-
 if __name__ == "__main__":
+    main()
     main()
