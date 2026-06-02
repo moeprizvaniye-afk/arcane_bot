@@ -10,7 +10,7 @@ from telegram.ext import (
     ContextTypes,
 )
 
-TOKEN = "8766565721:AAGiKDqxXtKmhX4aDMMe0ve5adZ1VjSNSRg"
+TOKEN = "8766565721:AAGiKDqxXtKmhX4aDMMeOve5adZ1VjSNSRg"
 
 PROFILE, ILLUSION, PATH, METHOD, VISUALIZATION_CHOICE = range(5)
 user_arcanes = {}
